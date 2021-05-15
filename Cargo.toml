@@ -1,0 +1,10 @@
+[package]
+name = "creative-rust-logistic-map"
+authors = ["Martin Renold <martin@log2.ch>"]
+license = "MIT"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+nannou = "0.16"
+
