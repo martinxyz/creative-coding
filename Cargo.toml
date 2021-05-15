@@ -7,4 +7,4 @@ edition = "2018"
 
 [dependencies]
 nannou = "0.16"
-
+rayon = "1.5"
