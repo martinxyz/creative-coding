@@ -42,7 +42,7 @@ fn model(app: &App) -> Model {
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
-    let prob = 1. - sigmoid((app.elapsed_frames() as f32 + 50.) as f32 / 500.);
+    let prob = 1. - sigmoid((app.elapsed_frames() as f32 + 500.) as f32 / 500.);
     println!("{} prob: {:?}", app.elapsed_frames(), prob);
     for state in model.states.iter_mut() {
         if random_f32() < prob {
@@ -61,7 +61,8 @@ fn view(app: &App, model: &Model, frame: Frame) {
     const SCALE_Y: f32 = 1024.0 * 0.4;
 
     if app.elapsed_frames() < 2 {
-        draw.background().color(PLUM);
+        // draw.background().color(PLUM);
+        draw.background().color(WHITE);
     } else {
         // draw.background().rgba(1.0, 1.0, 1.0, 0.001).;
         // draw.alpha_blend(BLEND_NORMAL).background().rgba(1.0, 1.0, 1.0, 0.001);
@@ -79,15 +80,15 @@ fn view(app: &App, model: &Model, frame: Frame) {
     for state in model.states.iter() {
         let x = state.r / 5.0;
         let y = state.x;
-        let it_fac = 1.0 / (state.iteration as f32 + 5.) + 1./5.;
+        let it_fac = 1.0 / (state.iteration as f32 + 2.) + 1./2.;
         draw
             // .blend(BLEND_DARKEST)
             // .point_mode()
             .ellipse()
-            .rgba(colorfac * 0.9, colorfac * 0.3, colorfac * 0.2, (1.0 - it_fac) * 0.05)
+            .rgba(colorfac * 0.9, colorfac * 0.3, colorfac * 0.2, (1.0 - it_fac) * 0.5)
             .x(x * SCALE_X - SCALE_X/2.0)
             .y(y * SCALE_Y - SCALE_Y/2.0)
-            .radius(0.05 + it_fac * 4.0)
+            .radius(0.05 + it_fac * 0.0)
             ;
     }
     draw.to_frame(app, &frame).unwrap();
