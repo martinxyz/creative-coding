@@ -1,4 +1,8 @@
 use nannou::prelude::*;
+use rand::prelude::*;
+use rand::thread_rng;
+use rand_distr::StandardNormal;
+
 
 fn main() {
     nannou::app(model).update(update).run();
@@ -22,6 +26,19 @@ impl State {
         // logistic map formula
         self.x = self.r * self.x * (1.0 - self.x);
         self.iteration += 1;
+    }
+    fn disturb(&mut self, amount: f32) {
+        if random_f32() < 0.1 * amount {
+            // self.r = random_f32() * 4.0 + 0.5;
+            // self.iteration = 0;
+            *self = Self::init();
+        } else {
+            self.x += random_std() * amount;
+            self.r += random_std() * amount;
+            self.iteration = 0;
+            // self.iteration = 0;
+            // self.step();
+        }
     }
 }
 
@@ -47,11 +64,11 @@ fn model(app: &App) -> Model {
 }
 
 fn update(app: &App, model: &mut Model, _update: Update) {
-    let prob = 1. - sigmoid((app.elapsed_frames() as f32 + 500.) as f32 / 500.);
+    let prob = 1. - sigmoid((app.elapsed_frames() as f32 - 200.) as f32 / 900.);
     println!("frame {} reset probability {:?}", app.elapsed_frames(), prob);
     for state in model.states.iter_mut() {
-        if random_f32() < prob {
-            *state = State::init();
+        if random_f32() < prob + 0.05 {
+            state.disturb(prob * 0.1)
         } else {
             state.step()
         }
@@ -73,21 +90,25 @@ fn view(app: &App, model: &Model, frame: Frame) {
     for state in model.states.iter() {
         let x = state.r / 5.0;
         let y = state.x;
-        let it_fac = 1.0 / (state.iteration as f32 + 2.) + 0.5;
+        let it_fac = sigmoid((state.iteration as f32 - 5.0) * 0.1);
         draw.ellipse()
             .rgba(
+                color_fac * 1.0,
                 color_fac * 0.9,
-                color_fac * 0.3,
-                color_fac * 0.2,
+                color_fac * 0.5,
                 (1.0 - it_fac) * 0.5,
             )
             .x(x * SCALE_X - SCALE_X / 2.0)
             .y(y * SCALE_Y - SCALE_Y / 2.0)
-            .radius(0.05 + it_fac * 0.0);
+            .radius(0.05 + it_fac * 0.2);
     }
     draw.to_frame(app, &frame).unwrap();
 }
 
 fn sigmoid(x: f32) -> f32 {
     1.0 / (1.0 + (-x).exp())
+}
+
+fn random_std() -> f32 {
+    thread_rng().sample(StandardNormal)
 }
