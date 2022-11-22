@@ -2,9 +2,8 @@
 name = "creative-rust-logistic-map"
 authors = ["Martin Renold <martin@log2.ch>"]
 license = "MIT"
-version = "0.1.0"
-edition = "2018"
+version = "0.0.0"
+edition = "2021"
 
 [dependencies]
-nannou = "0.16"
-
+nannou = "0.18"
